@@ -1,6 +1,7 @@
 ---
 - name: Install nginx
   hosts: test
+  user: centos
   become: yes
   become_method: sudo
 
