@@ -1,0 +1,27 @@
+---
+- name: Install nginx
+  hosts: test
+  user: host
+  become: true
+  become_method: sudo
+
+  tasks:
+  - name: Add epel-release repo
+    yum:
+      name: epel-release
+      state: present
+
+  - name: Install nginx
+    yum:
+      name: nginx
+      state: present
+
+ #- name: Insert Index Page
+  # copy:
+  # src: /root/files/index.html
+  # dest: /usr/share/nginx/html/index.html
+
+  - name: Start NGiNX
+    service:
+      name: nginx
+      state: started
