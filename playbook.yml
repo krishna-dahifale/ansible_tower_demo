@@ -15,12 +15,6 @@
     yum:
       name: nginx
       state: present
-
- #- name: Insert Index Page
-  # copy:
-  # src: /root/files/index.html
-  # dest: /usr/share/nginx/html/index.html
-
   - name: Start NGiNX
     service:
       name: nginx
