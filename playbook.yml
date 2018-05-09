@@ -1,6 +1,6 @@
 ---
 - name: Install nginx
-  hosts: test
+  hosts: localhost
   user: all
   become: yes
   become_method: sudo
