@@ -13,7 +13,7 @@
 	  
   - name: Setup repository for CentOS machine
     get_url:
-      url: http://public-repo-1.hortonworks.com/ambari/centos{{ ansible_distribution_major_version }}/2.x/updates/2.2.2.0/ambari.repo
+      url: http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.2.2.0/ambari.repo
       dest: /etc/yum.repos.d/
       mode: 0440
 
