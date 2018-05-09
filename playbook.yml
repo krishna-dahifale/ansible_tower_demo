@@ -10,19 +10,8 @@
     yum:
       name: epel-release
       state: present
-  - name: Setup repository for CentOS machine
-    get_url:
-      url: http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.2.2.0/ambari.repo
-      dest: /etc/yum.repos.d/
-      mode: 0440
-    notify: Reload systemd
-
   - name: Install nginx
     yum:
       name: nginx
       state: present
-  - name: Install the ambari-server package
-    package:
-     name: ambari-server
-     update_cache: yes
-     state: latest
+ 
