@@ -23,7 +23,7 @@ def createStack(stack_name=None, no_confirm=False, verbose=0):
     if not no_confirm:
          click.confirm('Continue using these values?', abort=True)
     
-    playbooks = ['/home/centos/ansible-tower/aws-ansible/playbooks/infrastructure.yml', '/home/centos/ansible-tower/aws-ansible/playbooks/nginx.yml']
+    playbooks = ['/home/centos/ansible_tower_demo/ansible-tower/aws-ansible/playbooks/infrastructure.yml', '/home/centos/ansible_tower_demo/ansible-tower/aws-ansible/playbooks/nginx.yml']
 
     for playbook in playbooks:
 
