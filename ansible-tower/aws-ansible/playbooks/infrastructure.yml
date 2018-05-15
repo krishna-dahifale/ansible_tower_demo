@@ -1,0 +1,6 @@
+---
+- hosts: acm-machine-user
+  gather_facts: no
+  become: no
+  roles:
+  - cloudformation-infra

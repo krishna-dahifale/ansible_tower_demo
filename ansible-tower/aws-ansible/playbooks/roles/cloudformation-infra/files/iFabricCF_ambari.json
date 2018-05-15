@@ -1,0 +1,531 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "Cloud formation template for POV Environment",
+
+  "Parameters": {
+    "PublicHostedZone": {
+        "Type": "String",
+        "Default": "paas-enablement.net."
+    }
+  },
+
+  "Resources": {
+      "bastionIFabric" : {
+          "Type" : "AWS::EC2::Instance",
+          "Properties" : {
+            "KeyName" : "ifabric-key",
+            "InstanceType" : "t2.micro",
+            "ImageId" : "ami-4e823a31",
+            "Tags" : [ {
+              "Key" : "Name", "Value" : {
+                "Fn::Join": [
+                    "-",
+                    [
+                        "bastion",
+                        {
+                            "Ref": "AWS::StackName"
+                        }
+                    ]
+                ]
+            }
+            } ],
+            "NetworkInterfaces": [ {
+                "AssociatePublicIpAddress": "true",
+                "DeviceIndex": "0",
+                "GroupSet": [{ 
+                  "Ref" : "iFabricSG"
+                }],
+                "SubnetId": {
+                  "Ref" : "iFabricPublicSubnet"
+                }
+            } ]
+          }
+      },
+      "nginxIFabric" : {
+        "Type" : "AWS::EC2::Instance",
+        "Properties" : {
+          "KeyName" : "ifabric-key",
+          "InstanceType" : "t2.micro",
+          "ImageId" : "ami-4e823a31",
+          "Tags" : [ {
+            "Key" : "Name", "Value" : {
+              "Fn::Join": [
+                  "-",
+                  [
+                      "nginx",
+                      {
+                          "Ref": "AWS::StackName"
+                      }
+                  ]
+              ]
+          }
+          } ],
+          "NetworkInterfaces": [ {
+              "AssociatePublicIpAddress": "true",
+              "DeviceIndex": "0",
+              "GroupSet": [{ 
+                "Ref" : "iFabricSG"
+              }],
+              "SubnetId": {
+                "Ref" : "iFabricPublicSubnet"
+              }
+          } ]
+        }
+      },
+      "ambariServer" : {
+        "Type" : "AWS::EC2::Instance",
+        "Properties" : {
+          "KeyName" : "ifabric-key",
+          "InstanceType" : "m4.large",
+          "ImageId" : "ami-4e823a31",
+          "Tags" : [ {
+            "Key" : "Name", "Value" : {
+              "Fn::Join": [
+                  "-",
+                  [
+                      "ambari-server",
+                      {
+                          "Ref": "AWS::StackName"
+                      }
+                  ]
+              ]
+          }
+          } ],
+          "NetworkInterfaces": [ {
+            "DeviceIndex": "0",
+            "GroupSet": [{ 
+              "Ref" : "iFabricSG"
+            }],
+            "SubnetId": {
+              "Ref" : "iFabricPrivateSubnet"
+            }
+        } ]
+        }
+      },
+      "ambariAgent1" : {
+        "Type" : "AWS::EC2::Instance",
+        "Properties" : {
+          "KeyName" : "ifabric-key",
+          "InstanceType" : "m4.large",
+          "ImageId" : "ami-4e823a31",
+          "Tags" : [ {
+            "Key" : "Name", "Value" : {
+              "Fn::Join": [
+                  "-",
+                  [
+                      "ambari-agent-1",
+                      {
+                          "Ref": "AWS::StackName"
+                      }
+                  ]
+              ]
+          }
+          } ],
+          "NetworkInterfaces": [ {
+            "DeviceIndex": "0",
+            "GroupSet": [{ 
+              "Ref" : "iFabricSG"
+            }],
+            "SubnetId": {
+              "Ref" : "iFabricPrivateSubnet"
+            }
+        } ]
+        }
+      },
+      "ambariAgent2" : {
+        "Type" : "AWS::EC2::Instance",
+        "Properties" : {
+          "KeyName" : "ifabric-key",
+          "InstanceType" : "m4.large",
+          "ImageId" : "ami-4e823a31",
+          "Tags" : [ {
+            "Key" : "Name", "Value" : {
+              "Fn::Join": [
+                  "-",
+                  [
+                      "ambari-agent-2",
+                      {
+                          "Ref": "AWS::StackName"
+                      }
+                  ]
+              ]
+          }
+          } ],
+          "NetworkInterfaces": [ {
+            "DeviceIndex": "0",
+            "GroupSet": [{ 
+              "Ref" : "iFabricSG"
+            }],
+            "SubnetId": {
+              "Ref" : "iFabricPrivateSubnet"
+            }
+        } ]
+        }
+      },
+      "iFabricVPC": {
+        "Type": "AWS::EC2::VPC",
+        "Properties": {
+          "Tags" : [ {
+            "Key" : "Name", "Value" : {
+              "Fn::Join": [
+                  "-",
+                  [
+                      "vpc",
+                      {
+                          "Ref": "AWS::StackName"
+                      }
+                  ]
+              ]
+          }
+          } ],
+    	    "EnableDnsSupport" : "true",
+    	    "EnableDnsHostnames" : "true",
+          "CidrBlock": "10.24.0.0/16"
+        }
+      },
+      "iFabricPublicSubnet": {
+        "Type": "AWS::EC2::Subnet",
+        "Properties": {
+            "VpcId": {
+              "Ref": "iFabricVPC"
+            },
+            "MapPublicIpOnLaunch" : "true",
+            "Tags" : [ {
+              "Key" : "Name", "Value" : {
+                "Fn::Join": [
+                    "-",
+                    [
+                        "public-subnet",
+                        {
+                            "Ref": "AWS::StackName"
+                        }
+                    ]
+                ]
+            }
+            } ],
+            "CidrBlock": "10.24.1.0/24"
+        }
+      },
+      "iFabricPrivateSubnet": {
+        "Type": "AWS::EC2::Subnet",
+        "Properties": {
+            "VpcId": {
+              "Ref": "iFabricVPC"
+            },
+            "Tags" : [ {
+              "Key" : "Name", "Value" : {
+                "Fn::Join": [
+                    "-",
+                    [
+                        "private-subnet",
+                        {
+                            "Ref": "AWS::StackName"
+                        }
+                    ]
+                ]
+            }
+            } ],
+            "CidrBlock": "10.24.2.0/24"
+        }
+      },
+      "iFabricInternetGateway" : {
+        "Type" : "AWS::EC2::InternetGateway",
+        "Properties" : {
+           "Tags" : [ {
+             "Key" : "Name", "Value" : {
+              "Fn::Join": [
+                  "-",
+                  [
+                      "internet-gateway",
+                      {
+                          "Ref": "AWS::StackName"
+                      }
+                  ]
+              ]
+          }
+           }]
+        }
+      },
+      "iFabricVpcGatewayAttachment": {
+        "Type": "AWS::EC2::VPCGatewayAttachment",
+        "Properties": {
+          "InternetGatewayId": {
+            "Ref": "iFabricInternetGateway"
+          },
+          "VpcId": {
+            "Ref": "iFabricVPC"
+          }
+        }
+      },
+      "iFabricNatGateway" : {
+        "Type" : "AWS::EC2::NatGateway",
+        "Properties" : {
+          "AllocationId" : {
+            "Fn::GetAtt" : [
+              "iFabricEIP", "AllocationId"
+            ]},
+          "SubnetId" : {
+            "Ref" : "iFabricPublicSubnet"
+          },
+          "Tags" : [ {
+            "Key" : "Name", "Value" : {
+              "Fn::Join": [
+                  "-",
+                  [
+                      "nat-gateway",
+                      {
+                          "Ref": "AWS::StackName"
+                      }
+                  ]
+              ]
+          }
+          }]
+        }
+      },
+      "iFabricEIP" : {
+        "Type" : "AWS::EC2::EIP",
+        "DependsOn" : "iFabricVpcGatewayAttachment",
+        "Properties" : {
+          "Domain" : "iFabricVPC"
+        }
+      },
+      "iFabricSG" : {
+        "Type" : "AWS::EC2::SecurityGroup",
+        "Properties" : {
+           "GroupDescription" : "Allow http to client host",
+           "VpcId" : {
+             "Ref" : "iFabricVPC"
+           },
+           "SecurityGroupIngress" : [{
+                 "IpProtocol" : "tcp",
+                 "FromPort" : "22",
+                 "ToPort" : "22",
+                 "CidrIp" : "0.0.0.0/0"
+              },
+              {
+                "IpProtocol" : "tcp",
+                "FromPort" : "0",
+                "ToPort" : "65535",
+                "CidrIp" : "0.0.0.0/0"
+              },
+              {
+                "IpProtocol" : "tcp",
+                "FromPort" : "80",
+                "ToPort" : "80",
+                "CidrIp" : "0.0.0.0/0"
+              },
+              {
+                "IpProtocol" : "tcp",
+                "FromPort" : "8080",
+                "ToPort" : "8080",
+                "CidrIp" : "0.0.0.0/0"
+              }]
+        }
+     },
+     "iFabricPublicRoute" : {
+      "Type" : "AWS::EC2::Route",
+      "DependsOn" : "iFabricVpcGatewayAttachment",
+      "Properties" : {
+        "RouteTableId" : {
+          "Ref" : "iFabricPublicRouteTable"
+        },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "GatewayId" : {
+          "Ref" : "iFabricInternetGateway"
+        }
+      }
+    },
+     "iFabricPublicRouteTable" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+         "VpcId" : {
+           "Ref" : "iFabricVPC"
+         },
+         "Tags" : [ {
+          "Key" : "Name", "Value" : {
+            "Fn::Join": [
+                "-",
+                [
+                    "public-route-table",
+                    {
+                        "Ref": "AWS::StackName"
+                    }
+                ]
+            ]
+        }
+        } ]
+      }
+     },
+     "iFabricPublicRouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+         "SubnetId" : {
+           "Ref" : "iFabricPublicSubnet"
+         },
+         "RouteTableId" : {
+           "Ref" : "iFabricPublicRouteTable"
+         }
+      }
+     },
+     "iFabricPrivateRoute" : {
+      "Type" : "AWS::EC2::Route",
+      "DependsOn" : "iFabricVpcGatewayAttachment",
+      "Properties" : {
+        "RouteTableId" : {
+          "Ref" : "iFabricPrivateRouteTable"
+        },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "NatGatewayId" : {
+          "Ref" : "iFabricNatGateway"
+        }
+      }
+    },
+     "iFabricPrivateRouteTable" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+         "VpcId" : {
+           "Ref" : "iFabricVPC"
+         },
+         "Tags" : [ {
+          "Key" : "Name", "Value" : {
+            "Fn::Join": [
+                "-",
+                [
+                    "private-route-table",
+                    {
+                        "Ref": "AWS::StackName"
+                    }
+                ]
+            ]
+        }
+        } ]
+      }
+     },
+     "iFabricPrivateRouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+         "SubnetId" : {
+           "Ref" : "iFabricPrivateSubnet"
+         },
+         "RouteTableId" : {
+           "Ref" : "iFabricPrivateRouteTable"
+         }
+      }
+     },
+     "bastionHostiFabricR53" : {
+      "Type" : "AWS::Route53::RecordSet",
+      "Properties" : {
+        "HostedZoneName" : {
+          "Ref": "PublicHostedZone"
+        },
+        "Name" : {
+            "Fn::Join" : [ "", [
+               "bastion-pov", ".",
+               "paas-enablement.net" ,"."
+            ] ]
+         },
+        "Type" : "A",
+        "TTL" : "300",
+        "ResourceRecords" : [
+          { "Fn::GetAtt" : [ "bastionIFabric", "PublicIp" ] }
+        ]
+      }
+    },
+    "nginxiFabricR53" : {
+      "Type" : "AWS::Route53::RecordSet",
+      "Properties" : {
+        "HostedZoneName" : {
+          "Ref": "PublicHostedZone"
+        },
+        "Name" : {
+            "Fn::Join" : [ "", [
+               "nginx-pov", ".",
+               "paas-enablement.net" ,"."
+            ] ]
+         },
+        "Type" : "A",
+        "TTL" : "300",
+        "ResourceRecords" : [
+          { "Fn::GetAtt" : [ "nginxIFabric", "PublicIp" ] }
+        ]
+      }
+    },
+    "ambariNginxR53" : {
+      "Type" : "AWS::Route53::RecordSet",
+      "Properties" : {
+        "HostedZoneName" : {
+          "Ref": "PublicHostedZone"
+        },
+        "Name" : {
+            "Fn::Join" : [ "", [
+               "ambari-server", ".",
+               "paas-enablement.net" ,"."
+            ] ]
+         },
+        "Type" : "A",
+        "TTL" : "300",
+        "ResourceRecords" : [
+          { "Fn::GetAtt" : [ "nginxIFabric", "PublicIp" ] }
+        ]
+      }
+    },
+    "ambariServerR53" : {
+      "Type" : "AWS::Route53::RecordSet",
+      "Properties" : {
+        "HostedZoneName" : {
+          "Ref": "PublicHostedZone"
+        },
+        "Name" : {
+            "Fn::Join" : [ "", [
+               "ambari-server-iFabric", ".",
+               "paas-enablement.net" ,"."
+            ] ]
+         },
+        "Type" : "A",
+        "TTL" : "300",
+        "ResourceRecords" : [
+          { "Fn::GetAtt" : [ "ambariServer", "PrivateIp" ] }
+        ]
+      }
+    },
+    "ambariAgent1R53" : {
+      "Type" : "AWS::Route53::RecordSet",
+      "Properties" : {
+        "HostedZoneName" : {
+          "Ref": "PublicHostedZone"
+        },
+        "Name" : {
+            "Fn::Join" : [ "", [
+               "ambari-agent-1-iFabric", ".",
+               "paas-enablement.net" ,"."
+            ] ]
+         },
+        "Type" : "A",
+        "TTL" : "300",
+        "ResourceRecords" : [
+          { "Fn::GetAtt" : [ "ambariAgent1", "PrivateIp" ] }
+        ]
+      }
+    },
+    "ambariAgent2R53" : {
+      "Type" : "AWS::Route53::RecordSet",
+      "Properties" : {
+        "HostedZoneName" : {
+          "Ref": "PublicHostedZone"
+        },
+        "Name" : {
+            "Fn::Join" : [ "", [
+               "ambari-agent-2-iFabric", ".",
+               "paas-enablement.net" ,"."
+            ] ]
+         },
+        "Type" : "A",
+        "TTL" : "300",
+        "ResourceRecords" : [
+          { "Fn::GetAtt" : [ "ambariAgent2", "PrivateIp" ] }
+        ]
+      }
+    }
+  }
+}

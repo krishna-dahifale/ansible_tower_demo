@@ -1,0 +1,7 @@
+---
+- name: Create iFabricAmbari Infrastructure
+  cloudformation:
+    stack_name: "{{ stack_name }}"
+    state: "present"
+    region: "us-east-1"
+    template: "roles/cloudformation-infra/files/iFabricCF_ambari.json"

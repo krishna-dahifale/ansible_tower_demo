@@ -1,0 +1,12 @@
+[ambari-server]
+ambari-server-ifabric.paas-enablement.net
+
+[ambari-agent]
+ambari-agent-ifabric.paas-enablement.net
+
+[bastion]
+bastion-pov.paas-enablement.net
+
+[nginx]
+nginx-pov.paas-enablement.net
+
