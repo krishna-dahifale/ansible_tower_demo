@@ -44,4 +44,4 @@ def createStack(stack_name=None, no_confirm=False, verbose=0):
      #     print('AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY **MUST** be exported as environment variables.')
      #     sys.exit(1)
 
-     createStack()
+
