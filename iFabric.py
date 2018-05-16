@@ -32,7 +32,7 @@ def createStack(stack_name=None, no_confirm=False, verbose=0):
         if verbose > 0:
           devnull=''
 
-        command='ansible-playbook -i /home/centos/codex-ifabric-ansible-pov/aws-ansible/inventory/hosts -e \'stack_name=%s \' %s' % (stack_name, playbook)
+        command='ansible-playbook -i /home/centos/codex-ifabric-ansible-pov/aws-ansible/inventory/hosts nginx.yml '
         status = os.system(command)
 
         if os.WIFEXITED(status) and os.WEXITSTATUS(status) != 0:
