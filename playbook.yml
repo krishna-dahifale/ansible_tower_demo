@@ -7,6 +7,6 @@
 
   tasks:
   - name: Run ifbaric.py file
-    command: python ifbaric.py
+    command: python exec ifbaric.py
    
  
