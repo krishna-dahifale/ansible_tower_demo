@@ -15,13 +15,6 @@ import sys
 
 			  
 def createStack(stack_name=None, no_confirm=False, verbose=0):
-
-    click.echo('Configured values:')
-    click.echo('\tstack_name: %s' % stack_name)
-    click.echo("")
-
-    if not no_confirm:
-         click.confirm('Continue using these values?', abort=True)
     
     playbooks = ['/home/centos/ansible_tower_demo/ansible-tower/aws-ansible/playbooks/nginx.yml']
 
@@ -40,8 +33,6 @@ def createStack(stack_name=None, no_confirm=False, verbose=0):
 
 
 #if __name__ == '__main__':
-  #   if os.getenv('AWS_ACCESS_KEY_ID') is None or os.getenv('AWS_SECRET_ACCESS_KEY') is None:
-   #       print('AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY **MUST** be exported as environment variables.')
-   #       sys.exit(1)
-
-     createStack()
+    # if os.getenv('AWS_ACCESS_KEY_ID') is None or os.getenv('AWS_SECRET_ACCESS_KEY') is None:
+     #     print('AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY **MUST** be exported as environment variables.')
+     #     sys.exit(1)
