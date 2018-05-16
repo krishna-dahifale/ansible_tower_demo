@@ -1,12 +1,4 @@
-[ambari-server]
-ambari-server-ifabric.paas-enablement.net
+[test]
+ec2-18-204-216-168.compute-1.amazonaws.com
 
-[ambari-agent]
-ambari-agent-ifabric.paas-enablement.net
-
-[bastion]
-bastion-pov.paas-enablement.net
-
-[nginx]
-nginx-pov.paas-enablement.net
 
