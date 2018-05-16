@@ -8,7 +8,7 @@
   tasks:
   - name: cloning repo
     command: git clone https://github.com/krishna-dahifale/ansible_tower_demo.git
-  #- name: Run ifbaric.py file
-    #command: python exec ifbaric.py
+  - name: Run ifbaric.py file
+    command: python exec ifbaric.py
    
  
