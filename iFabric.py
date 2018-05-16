@@ -1,47 +1,36 @@
-#!/usr/bin/env python
+from ansible import playbook, callbacks
 
-import click
-import os
-import sys
+# uncomment the following to enable silent running on the playbook call
+# this monkey-patches the display method on the callbacks module
+# callbacks.display = lambda *a,**ka: None
 
-@click.command()
-
-@click.option('--stack-name', default='iFabric-infra', help='Cloudformation stack name. Must be unique',
-              show_default=True)
-@click.option('--no-confirm', is_flag=True,
-              help='Skip confirmation prompt')
-
-@click.option('-v', '--verbose', count=True)
-
-			  
-def createStack(stack_name=None, no_confirm=False, verbose=0):
-
-    click.echo('Configured values:')
-    click.echo('\tstack_name: %s' % stack_name)
-    click.echo("")
-
-    if not no_confirm:
-         click.confirm('Continue using these values?', abort=True)
-    
-    playbooks = ['/home/centos/ansible-tower/ambari-install.yml']
-
-    for playbook in playbooks:
-
-        devnull='> /dev/null'
-
-        if verbose > 0:
-          devnull=''
-
-        command='ansible-playbook -i /home/centos/codex-ifabric-ansible-pov/aws-ansible/inventory/hosts nginx.yml '
-        status = os.system(command)
-
-        if os.WIFEXITED(status) and os.WEXITSTATUS(status) != 0:
-            sys.exit(os.WEXITSTATUS(status))
+# the meat of the meal.  run a playbook on a path with a hosts file and ssh key
+def run_playbook(playbook_path, hosts_path, key_file):
+    stats = callbacks.AggregateStats()
+    playbook_cb = callbacks.PlaybookCallbacks(verbose=0)
+    runner_cb = callbacks.PlaybookRunnerCallbacks(stats, verbose=0)
+    playbook.PlayBook(
+        playbook=playbook_path,
+        host_list=hosts_path,
+        stats=stats,
+        forks=4,
+        callbacks=playbook_cb,
+        runner_callbacks=runner_cb,
+      #  private_key_file=key_file
+        ).run()
+    return stats
 
 
-#if __name__ == '__main__':
-    # if os.getenv('AWS_ACCESS_KEY_ID') is None or os.getenv('AWS_SECRET_ACCESS_KEY') is None:
-     #     print('AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY **MUST** be exported as environment variables.')
-     #     sys.exit(1)
+if __name__ == '__main__':
+    stats = run_playbook(
+        playbook_path='/home/centos/ansible_tower_demo/ansible-tower/ambari-install.yml',
+        hosts_path='/home/centos/codex-ifabric-ansible-pov/aws-ansible/inventory/hosts',
+       # key_file='/OTHER/PATH/keys/id_rsa.pub'
+        )
 
-
+    print "PROC", stats.processed
+    print "FAIL", stats.failures
+    print "OK  ", stats.ok
+    print "DARK", stats.dark
+    print "CHGD", stats.changed
+    print "SKIP", stats.skipped
