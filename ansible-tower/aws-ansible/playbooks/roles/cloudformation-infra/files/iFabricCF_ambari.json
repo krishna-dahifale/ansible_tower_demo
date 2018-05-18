@@ -4,7 +4,7 @@
   "Parameters": {
     "PublicHostedZone": {
         "Type": "String",
-        "Default": "ansible-towerdemo.net."
+        "Default": "paas-enablement.net."
     }
   },
   "Resources" : {
@@ -137,7 +137,7 @@
         "Name" : {
             "Fn::Join" : [ "", [
                "nginx", ".",
-               "ansible-towerdemo.net" ,"."
+               "paas-enablement.net" ,"."
             ] ]
          },
         "Type" : "A",
